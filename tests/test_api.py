@@ -53,6 +53,26 @@ class TestWebNarrationUI:
         assert "narration" in resp.text.lower()
         assert "/narration/start" in resp.text
 
+    def test_main_web_ui_is_served(self, client: TestClient) -> None:
+        resp = client.get("/ui/")
+        assert resp.status_code == 200
+        assert "personal digital twin" in resp.text.lower()
+        assert "executive pulse" in resp.text.lower()
+        assert "twin sandbox" in resp.text.lower()
+
+    def test_root_redirects_to_ui(self, client: TestClient) -> None:
+        resp = client.get("/", follow_redirects=False)
+        assert resp.status_code in (302, 307)
+        assert resp.headers["location"] == "/ui/"
+
+    def test_web_ui_assets_served(self, client: TestClient) -> None:
+        resp_css = client.get("/ui/styles.css")
+        assert resp_css.status_code == 200
+        resp_js = client.get("/ui/app.js")
+        assert resp_js.status_code == 200
+        resp_graph = client.get("/ui/graph.js")
+        assert resp_graph.status_code == 200
+
 
 class TestDebugStoreRoundTrip:
     """Exit criterion: a round-trip store endpoint works end to end."""

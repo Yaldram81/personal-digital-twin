@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Personal Digital Twin — Computational Reasoning & Value Simulation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A state-of-the-art computational digital twin modeling human reasoning, value hierarchies, and decision styles with envelope-encrypted storage." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-section">
+        <div class="brand-logo" id="brand-logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4z"/>
+            <path d="M16 8a4 4 0 0 1 4 4v2a4 4 0 0 1-4 4"/>
+            <path d="M8 8a4 4 0 0 0-4 4v2a4 4 0 0 0 4 4"/>
+            <path d="M12 18v4"/>
+            <path d="M8 22h8"/>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <h1>Personal Digital Twin</h1>
+          <div class="tagline">Computational Cognitive Mirror • Encrypted Local Vault</div>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="status-badge" id="vault-status-badge">
+          <span class="status-dot pulsing"></span>
+          <span id="vault-status-text">AES-GCM Vault Active</span>
+        </div>
+        <div class="status-badge" style="font-family: var(--font-mono); font-size: 0.75rem;">
+          <span style="color: var(--accent-indigo-light);">DUCKDB</span> + <span style="color: var(--accent-cyan);">LANCEDB</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="data-mode-toggle" title="Toggle between live backend data and rich simulation preview">
+          <button type="button" class="mode-btn" data-mode="live" id="mode-btn-live">Live Store</button>
+          <button type="button" class="mode-btn active" data-mode="demo" id="mode-btn-demo">Preview Model</button>
+        </div>
+
+        <button type="button" class="btn-icon" id="doctor-btn" title="Run PDT Doctor diagnostics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="nav-bar">
+    <div class="nav-container">
+      <button type="button" class="nav-tab active" data-tab="overview" id="tab-btn-overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Executive Pulse
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="simulation" id="tab-btn-simulation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Twin Sandbox
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="beliefs" id="tab-btn-beliefs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Belief Graph
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="values" id="tab-btn-values">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+        Values & Styles
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="tensions" id="tab-btn-tensions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Tensions & Drift
+        <span class="badge-counter alert" id="nav-tension-count">2</span>
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="narration" id="tab-btn-narration">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Narration Studio
+      </button>
+
+      <button type="button" class="nav-tab" data-tab="vault" id="tab-btn-vault">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Memory & Privacy
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-wrapper">
+
+    <!-- TAB 1: EXECUTIVE PULSE -->
+    <section class="tab-pane active" id="tab-overview">
+      <div class="hero-banner">
+        <div class="hero-content">
+          <div class="hero-badge">Autonomous Personal Digital Twin v0.0.1</div>
+          <h2 class="hero-title">A Computational Mirror of How You Think</h2>
+          <p class="hero-desc">
+            Not advice. Not generic generative chat. Your Twin synthesizes your real historical decisions,
+            extracts latent Bayesian value weights across Schwartz dimensions, and simulates counterfactual reasoning paths.
+          </p>
+          <div class="hero-actions">
+            <button type="button" class="btn-primary" onclick="window.pdtApp.switchTab('simulation')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Run Twin Query Simulation
+            </button>
+            <button type="button" class="btn-secondary" onclick="window.pdtApp.switchTab('narration')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Narrate a Decision Trace
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 KPI Glow Cards -->
+      <div class="grid-cols-4" style="margin-bottom: 2rem;">
+        <div class="glass-card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Reasoning Traces</span>
+            <div class="kpi-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value" id="kpi-traces">28</div>
+          <div class="kpi-meta">
+            <span class="kpi-trend positive">+4 this week</span>
+            <span>• Append-only store</span>
+          </div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Active Beliefs</span>
+            <div class="kpi-icon-wrap cyan">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value" id="kpi-beliefs">14</div>
+          <div class="kpi-meta">
+            <span class="kpi-trend neutral">Across 6 domains</span>
+          </div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Calibration Score</span>
+            <div class="kpi-icon-wrap emerald">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value" id="kpi-calibration">89.4%</div>
+          <div class="kpi-meta">
+            <span class="kpi-trend positive">Reliability β=0.91</span>
+          </div>
+        </div>
+
+        <div class="glass-card kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-label">Active Tensions</span>
+            <div class="kpi-icon-wrap rose">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+          </div>
+          <div class="kpi-value" id="kpi-tensions">2</div>
+          <div class="kpi-meta">
+            <span class="kpi-trend warning">Surfaced for review</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Twin Diagnostics & Values -->
+      <div class="grid-2-1">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Core Value Hierarchy (Top Drivers)
+              </h3>
+              <div class="card-subtitle">Bayesian point estimates with 90% credible intervals</div>
+            </div>
+            <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;" onclick="window.pdtApp.switchTab('values')">View All 10</button>
+          </div>
+          <div id="overview-values-container"></div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Cognitive Frictions
+              </h3>
+              <div class="card-subtitle">Detected tensions between values & actions</div>
+            </div>
+          </div>
+          <div id="overview-tensions-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: TWIN SIMULATION SANDBOX -->
+    <section class="tab-pane" id="tab-simulation">
+      <div class="sandbox-header-strip">
+        <div class="query-type-selector">
+          <button type="button" class="query-type-btn active" data-type="predict_choice">Predict Choice</button>
+          <button type="button" class="query-type-btn" data-type="counterfactual">Counterfactual Sandbox</button>
+          <button type="button" class="query-type-btn" data-type="explain_reasoning">Explain Reasoning</button>
+          <button type="button" class="query-type-btn" data-type="value_alignment">Value Alignment</button>
+        </div>
+
+        <div class="scenario-presets">
+          <span>Quick Dilemmas:</span>
+          <button type="button" class="preset-chip">🚀 Startup vs Big Tech</button>
+          <button type="button" class="preset-chip">💰 Equity Sale vs Hold</button>
+          <button type="button" class="preset-chip">⚖️ Value Alignment</button>
+        </div>
+      </div>
+
+      <div class="grid-1-2">
+        <!-- Dilemma Composer -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">Scenario Parameters</h3>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="sim-domain-select">Domain</label>
+            <select class="form-select" id="sim-domain-select">
+              <option value="career">Career & Professional</option>
+              <option value="finance">Financial & Investments</option>
+              <option value="ethics">Ethics & Principles</option>
+              <option value="technology">Technology & Architecture</option>
+              <option value="relationships">Relationships & Social</option>
+              <option value="health">Health & Personal</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="sim-prompt-input">Dilemma Narrative Prompt</label>
+            <textarea class="form-textarea" id="sim-prompt-input" placeholder="Describe the decision dilemma in detail..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <label class="form-label" style="margin: 0;">Evaluation Options</label>
+              <button type="button" class="btn-secondary" id="add-option-btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;">+ Add Option</button>
+            </div>
+            <div class="options-builder" id="options-builder-container">
+              <div class="option-row">
+                <div class="option-tag">A</div>
+                <input type="text" class="form-input sim-option-input" value="Join the early-stage robotics startup" />
+              </div>
+              <div class="option-row">
+                <div class="option-tag">B</div>
+                <input type="text" class="form-input sim-option-input" value="Remain in current Big Tech staff role" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Counterfactual Perturbation Sliders -->
+          <div class="perturb-panel" id="perturb-panel" style="display: none;">
+            <div style="font-size: 0.8rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--accent-cyan);">
+              Perturb Value Weights (Counterfactual Simulation):
+            </div>
+            <div class="perturb-slider-grid">
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Self-Direction (Autonomy)</span>
+                  <span id="perturb-self_direction-val" class="slider-val zero">0.00</span>
+                </div>
+                <input type="range" class="perturb-slider" id="perturb-self_direction" min="-0.5" max="0.5" step="0.05" value="0" />
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Security (Risk Aversion)</span>
+                  <span id="perturb-security-val" class="slider-val zero">0.00</span>
+                </div>
+                <input type="range" class="perturb-slider" id="perturb-security" min="-0.5" max="0.5" step="0.05" value="0" />
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Benevolence</span>
+                  <span id="perturb-benevolence-val" class="slider-val zero">0.00</span>
+                </div>
+                <input type="range" class="perturb-slider" id="perturb-benevolence" min="-0.5" max="0.5" step="0.05" value="0" />
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span>Achievement</span>
+                  <span id="perturb-achievement-val" class="slider-val zero">0.00</span>
+                </div>
+                <input type="range" class="perturb-slider" id="perturb-achievement" min="-0.5" max="0.5" step="0.05" value="0" />
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn-primary" id="run-sim-btn" style="width: 100%; justify-content: center; margin-top: 1rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Execute Twin Query Simulation
+          </button>
+        </div>
+
+        <!-- Simulation Result Viewport -->
+        <div id="sim-result-container">
+          <div class="glass-card" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-muted); padding: 3rem;">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="stroke: var(--text-dim); margin-bottom: 1rem;">
+              <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+            </svg>
+            <h3 style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Ready to Simulate Your Cognitive Twin</h3>
+            <p style="font-size: 0.875rem; max-width: 440px;">Select a preset dilemma on top or compose your own scenario and evaluate the twin's choice probability distribution.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: BELIEF KNOWLEDGE GRAPH -->
+    <section class="tab-pane" id="tab-beliefs">
+      <div class="grid-2-1">
+        <!-- Interactive Canvas Viewport -->
+        <div class="glass-card" style="padding: 0; overflow: hidden;">
+          <div class="graph-viewport">
+            <div class="graph-controls">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-right: 0.25rem;">DOMAIN:</span>
+              <button type="button" class="domain-pill active" data-domain="all">All</button>
+              <button type="button" class="domain-pill" data-domain="career">Career</button>
+              <button type="button" class="domain-pill" data-domain="finance">Finance</button>
+              <button type="button" class="domain-pill" data-domain="technology">Tech</button>
+              <button type="button" class="domain-pill" data-domain="ethics">Ethics</button>
+              <button type="button" class="domain-pill" data-domain="relationships">Relationships</button>
+              <button type="button" class="domain-pill" data-domain="health">Health</button>
+            </div>
+
+            <div class="graph-zoom-controls">
+              <button type="button" class="btn-icon" id="graph-zoom-in" title="Zoom in">+</button>
+              <button type="button" class="btn-icon" id="graph-zoom-out" title="Zoom out">-</button>
+              <button type="button" class="btn-icon" id="graph-zoom-reset" title="Reset camera">⟲</button>
+            </div>
+
+            <div class="graph-legend">
+              <div class="legend-item"><span class="legend-dot" style="background: #6366f1;"></span> Career</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #10b981;"></span> Finance</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #38bdf8;"></span> Tech</div>
+              <div class="legend-item"><span class="legend-dot" style="background: #06b6d4;"></span> Ethics</div>
+              <div class="legend-item"><span style="display:inline-block; width:14px; height:2px; background:#f43f5e; border-top: 1px dashed #f43f5e;"></span> Tension Edge</div>
+            </div>
+
+            <canvas id="belief-canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Node Inspector Drawer -->
+        <div class="glass-card inspector-card" id="node-inspector-drawer">
+          <div class="inspector-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <p>Select or click any belief node in the canvas to inspect evidence trails, uncertainty intervals, and linked axioms.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: VALUE HIERARCHY & STYLES -->
+    <section class="tab-pane" id="tab-values">
+      <div class="grid-cols-2">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Schwartz 10-Dimensional Value Hierarchy</h3>
+              <div class="card-subtitle">Bayesian point estimates with posterior credible bounds</div>
+            </div>
+          </div>
+          <div id="schwartz-values-container"></div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Decision Style Profile</h3>
+              <div class="card-subtitle">General Decision Making Style (GDMS) dimensions</div>
+            </div>
+          </div>
+          <div id="decision-styles-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: TENSIONS & DRIFT -->
+    <section class="tab-pane" id="tab-tensions">
+      <div class="grid-cols-2">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Active Cognitive Tensions</h3>
+              <div class="card-subtitle">Surface contradictions discovered between stated values and real choices</div>
+            </div>
+          </div>
+          <div id="tensions-list-container"></div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Temporal Parameter Drift</h3>
+              <div class="card-subtitle">Statistical changepoints detected across your reasoning history</div>
+            </div>
+          </div>
+          <div id="drift-list-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: NARRATION STUDIO -->
+    <section class="tab-pane" id="tab-narration">
+      <div class="glass-card" style="max-width: 900px; margin: 0 auto;">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Structured Decision Narration Studio
+            </h3>
+            <div class="card-subtitle">Extracts schema-validated ReasoningTraces into your envelope-encrypted store.</div>
+          </div>
+          <button type="button" class="btn-secondary" id="load-narration-example-btn" style="font-size: 0.8rem; padding: 0.4rem 0.85rem;">
+            Load Sample Dilemma
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="narrate-intake">1. What real decision were you facing?</label>
+          <textarea class="form-textarea" id="narrate-intake" placeholder="e.g. Whether to accept an executive promotion or leave to start a venture..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="narrate-options">2. What options did you seriously consider?</label>
+          <textarea class="form-textarea" id="narrate-options" placeholder="List the viable options you evaluated..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="narrate-factors">3. What factors mattered most, and how did you weigh them?</label>
+          <textarea class="form-textarea" id="narrate-factors" placeholder="Key drivers, core values, risks, trade-offs..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="narrate-tradeoffs">4. How did those factors trade off against each other?</label>
+          <textarea class="form-textarea" id="narrate-tradeoffs" placeholder="Which value triumphed when they came into direct conflict?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="narrate-counterfactual">5. What almost changed your mind? (The Counterfactual)</label>
+          <textarea class="form-textarea" id="narrate-counterfactual" placeholder="Under what specific condition would you have chosen the opposite path?"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="narrate-review">6. Anything else worth adding? (Retrospective reflection)</label>
+          <textarea class="form-textarea" id="narrate-review" placeholder="Outcome or retrospective evaluation..."></textarea>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="button" class="btn-primary" id="submit-narration-btn" style="flex: 1; justify-content: center;">
+            Submit Narration & Commit Encrypted Trace
+          </button>
+          <button type="button" class="btn-secondary" id="start-narration-btn">
+            New Session
+          </button>
+        </div>
+
+        <div id="narration-result-inspector" style="margin-top: 1.5rem;"></div>
+      </div>
+    </section>
+
+    <!-- TAB 7: MEMORY VAULT & PRIVACY -->
+    <section class="tab-pane" id="tab-vault">
+      <div class="grid-cols-2">
+        <!-- Memory Retrieval Explorer -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Semantic Memory Retrieval</h3>
+              <div class="card-subtitle">Hybrid search over LanceDB vector store and DuckDB traces</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mem-query-input">Semantic Query</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" class="form-input" id="mem-query-input" placeholder="e.g. When did I take a major career risk?" />
+              <button type="button" class="btn-primary" id="mem-search-btn">Search</button>
+            </div>
+          </div>
+
+          <div id="mem-results-container" style="margin-top: 1rem;"></div>
+        </div>
+
+        <!-- Cryptographic Vault & Privacy -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">Cryptographic Vault & Privacy Controls</h3>
+              <div class="card-subtitle">Local-first, Argon2id key derivation, zero-knowledge export</div>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="stat-box">
+              <div class="stat-label">Envelope Encryption</div>
+              <div class="stat-val" style="font-size: 1rem; color: var(--accent-emerald);">AES-256-GCM + Argon2id</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Key derived from local passphrase in memory only.</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Vector Storage Snapshotting</div>
+              <div class="stat-val" style="font-size: 1rem; color: var(--accent-cyan);">LanceDB Native Versioning</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Append-only: truth is never overwritten.</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem;">
+            <button type="button" class="btn-primary" id="export-model-btn" style="flex: 1; justify-content: center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Signed Vault Bundle
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Doctor Diagnostics Modal -->
+  <div class="modal-overlay" id="doctor-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">PDT Doctor Health Diagnostics</h3>
+        <button type="button" class="modal-close">✕</button>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div class="stat-box">
+          <div class="stat-label">API Health</div>
+          <div class="stat-val" style="font-size: 1rem; color: var(--accent-emerald);">Active (FastAPI @ http://127.0.0.1:8000)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Encrypted Vault</div>
+          <div class="stat-val" style="font-size: 1rem; color: var(--accent-emerald);">Vault File Present (.data/)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Argon2id KDF Memory Cost</div>
+          <div class="stat-val" style="font-size: 1rem; color: var(--accent-cyan);">64 MiB (Passphrase Hardened)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Analytical Storage</div>
+          <div class="stat-val" style="font-size: 1rem; color: var(--accent-emerald);">DuckDB Embedded In-Process</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="graph.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

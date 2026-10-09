@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Literal, cast
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -64,7 +65,8 @@ from pdt.model.parameter_store import (
 )
 from pdt.ui.cli.narrate import NarrationSession
 
-_WEB_NARRATION_DIR = Path(__file__).resolve().parent.parent / "ui" / "web" / "narration"
+_WEB_DIR = Path(__file__).resolve().parent.parent / "ui" / "web"
+_WEB_NARRATION_DIR = _WEB_DIR / "narration"
 
 # ---------------------------------------------------------------------------
 # Request / response models
@@ -493,9 +495,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             for dimension, scalar in instrument_scores.items():
                 by_dimension.setdefault(dimension, []).append(scalar)
         fused_by_dimension = {
-            dimension: (
-                fuse_scored_scalars(scalars) if len(scalars) > 1 else scalars[0]
-            )
+            dimension: (fuse_scored_scalars(scalars) if len(scalars) > 1 else scalars[0])
             for dimension, scalars in by_dimension.items()
         }
         value_scores = {
@@ -822,10 +822,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/evidence/{param_key}", response_model=EvidenceTrailResponse, tags=["model"])
     def evidence_trail(param_key: str) -> EvidenceTrailResponse:
         store = get_state().store
-        evidence = [
-            json.loads(item)
-            for item in store.list_behavioral_signals(param_key=param_key)
-        ]
+        evidence = [json.loads(item) for item in store.list_behavioral_signals(param_key=param_key)]
         evidence.extend(
             [json.loads(item) for item in store.list_inconsistencies(param_key=param_key)]
         )
@@ -1008,11 +1005,22 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         state.narration_sessions.clear()
         return DeleteModelResponse(deleted=True)
 
+    @app.get("/", include_in_schema=False)
+    def root_redirect() -> RedirectResponse:
+        return RedirectResponse(url="/ui/")
+
     if _WEB_NARRATION_DIR.exists():
         app.mount(
             "/ui/narration",
             StaticFiles(directory=str(_WEB_NARRATION_DIR), html=True),
             name="narration-ui",
+        )
+
+    if _WEB_DIR.exists():
+        app.mount(
+            "/ui",
+            StaticFiles(directory=str(_WEB_DIR), html=True),
+            name="web-ui",
         )
 
     return app
