@@ -138,11 +138,11 @@ graph TB
     VAULT -.-> DUCKDB
     VAULT -.-> LANCEDB
 
-    style Client_Layer fill:#07090e,stroke:#6366f1,stroke-width:2px;
-    style API_Layer fill:#0b0f19,stroke:#06b6d4,stroke-width:2px;
-    style Engine_Layer fill:#0e1526,stroke:#f59e0b,stroke-width:2px;
-    style Model_Layer fill:#111827,stroke:#8b5cf6,stroke-width:2px;
-    style Storage_Layer fill:#090d16,stroke:#10b981,stroke-width:2px;
+    style Client_Layer fill:#07090e,stroke:#6366f1,stroke-width:2px,color:#ffffff;
+    style API_Layer fill:#0b0f19,stroke:#06b6d4,stroke-width:2px,color:#ffffff;
+    style Engine_Layer fill:#0e1526,stroke:#f59e0b,stroke-width:2px,color:#ffffff;
+    style Model_Layer fill:#111827,stroke:#8b5cf6,stroke-width:2px,color:#ffffff;
+    style Storage_Layer fill:#090d16,stroke:#10b981,stroke-width:2px,color:#ffffff;
 ```
 
 ---
@@ -182,31 +182,44 @@ How the Twin evaluates novel problems and tests value perturbations:
 
 ```mermaid
 flowchart TD
-    Q[Dilemma Scenario Input\n'Should I leave enterprise role for an AI startup?'] --> D[Domain Classification\ne.g., Career & Professional]
-    D --> R[Contextual Retrieval\nRelevant Traces & Active Belief Clusters]
+    Q["<b>Dilemma Scenario Input</b><br/>'Should I leave enterprise role for an AI startup?'"] --> D["<b>Domain Classification</b><br/>e.g., Career & Professional"]
+    D --> R["<b>Contextual Retrieval</b><br/>Relevant Traces & Active Belief Clusters"]
     
-    R --> S{Simulation Mode}
-    S -->|Standard Predict| SIM[Simulate Deliberation with Baseline Values]
-    S -->|Counterfactual| PERTURB[Apply Value Weight Perturbations\ne.g., +0.30 Autonomy, -0.20 Security]
+    R --> S{"<b>Simulation Mode</b>"}
+    S -->|Standard Predict| SIM["<b>Baseline Deliberation</b><br/>Simulate with Observed Values"]
+    S -->|Counterfactual| PERTURB["<b>Value Perturbation</b><br/>e.g., +0.30 Autonomy, -0.20 Security"]
     
     PERTURB --> SIM
-    SIM --> MONO[Generate Internal Thought Monologue]
-    SIM --> PROB[Compute Option Probability Distribution]
-    SIM --> UNC[Propagate Parameter Uncertainties to CI]
+    SIM --> MONO["<b>Internal Monologue</b><br/>Simulate reasoning thought process"]
+    SIM --> PROB["<b>Probability Distribution</b><br/>Compute choice likelihoods"]
+    SIM --> UNC["<b>Uncertainty Propagation</b><br/>Calculate Credible Intervals"]
     
-    PROB --> DISP[Render Prediction Card in Lavish UI]
+    PROB --> DISP["<b>Render Prediction Card</b><br/>Live display in Web UI & CLI"]
     MONO --> DISP
     UNC --> DISP
     
-    DISP --> FB{User Agreement?}
-    FB -->|Accurate| ACC[Log Verified Prediction Event]
-    FB -->|'Actually I would...'| CORR[Submit Feedback Correction\nPOST /twin/feedback]
-    CORR --> POSTERIOR[Shift Posterior Distributions for Future Queries]
+    DISP --> FB{"<b>User Agreement?</b>"}
+    FB -->|Accurate| ACC["<b>Verified Prediction</b><br/>Log validation event"]
+    FB -->|'Actually I would...'| CORR["<b>Feedback Correction</b><br/>POST /twin/feedback"]
+    CORR --> POSTERIOR["<b>Shift Posterior</b><br/>Update future Bayesian priors"]
 
-    style Q fill:#1e1e38,stroke:#6366f1,stroke-width:2px;
-    style PERTURB fill:#2e1065,stroke:#a855f7,stroke-width:2px;
-    style SIM fill:#064e3b,stroke:#10b981,stroke-width:2px;
-    style CORR fill:#881337,stroke:#f43f5e,stroke-width:2px;
+    classDef primary fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef process fill:#0f172a,stroke:#38bdf8,stroke-width:1.5px,color:#ffffff;
+    classDef decision fill:#1e293b,stroke:#fbbf24,stroke-width:2px,color:#ffffff;
+    classDef simulate fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef perturb fill:#3b0764,stroke:#c084fc,stroke-width:2px,color:#ffffff;
+    classDef success fill:#065f46,stroke:#10b981,stroke-width:2px,color:#ffffff;
+    classDef alert fill:#4c0519,stroke:#fb7185,stroke-width:2px,color:#ffffff;
+    classDef update fill:#14532d,stroke:#4ade80,stroke-width:2px,color:#ffffff;
+
+    class Q,DISP primary;
+    class D,R,MONO,PROB,UNC process;
+    class S,FB decision;
+    class SIM simulate;
+    class PERTURB perturb;
+    class ACC success;
+    class CORR alert;
+    class POSTERIOR update;
 ```
 
 ---
@@ -265,9 +278,13 @@ graph LR
     B1 -.->|⚡ Tension Severity=0.68| B3
 
     linkStyle 4 stroke:#f43f5e,stroke-width:3px,stroke-dasharray: 5 5;
-    style B1 fill:#1e1e38,stroke:#6366f1,stroke-width:2px;
-    style B3 fill:#064e3b,stroke:#10b981,stroke-width:2px;
-    style B6 fill:#0e7490,stroke:#06b6d4,stroke-width:2px;
+    classDef career fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff;
+    classDef finance fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#ffffff;
+    classDef ethics fill:#0e7490,stroke:#38bdf8,stroke-width:2px,color:#ffffff;
+
+    class B1,B2,B4 career;
+    class B3,B8 finance;
+    class B6 ethics;
 ```
 
 ---
