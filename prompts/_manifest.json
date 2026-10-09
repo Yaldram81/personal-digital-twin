@@ -1,0 +1,37 @@
+{
+  "reasoning_trace_extraction": {
+    "latest": "v1",
+    "versions": ["v1"],
+    "description": "Extract a structured ReasoningTrace from free-text decision narration."
+  },
+  "conversation_mining": {
+    "latest": "v1",
+    "versions": ["v1"],
+    "description": "Mine behavioral signals from conversation history."
+  },
+  "simulated_reasoning": {
+    "latest": "v1",
+    "versions": ["v1"],
+    "description": "Construct a prompt that encodes the user model for simulated reasoning."
+  },
+  "explanation": {
+    "latest": "v1",
+    "versions": ["v1"],
+    "description": "Rewrite a simulation in the user's vocabulary with trace citations."
+  },
+  "blindspot_detection": {
+    "latest": "v1",
+    "versions": ["v1"],
+    "description": "Identify factors typically important but absent from user's history."
+  },
+  "belief_extraction": {
+    "latest": "v1",
+    "versions": ["v1"],
+    "description": "Extract candidate belief nodes from reasoning traces with textual support."
+  },
+  "contradiction_phrasing": {
+    "latest": "v1",
+    "versions": ["v1"],
+    "description": "Phrase stated-vs-inferred tensions non-judgmentally for optional surfacing."
+  }
+}

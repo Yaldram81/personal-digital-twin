@@ -1,0 +1,12 @@
+# Contradiction Phrasing — v1
+
+System: Rephrase a tension between stated and inferred preferences in a non-judgmental way.
+
+## Input
+- stated: {stated}
+- inferred: {inferred}
+- domain: {domain}
+- magnitude: {magnitude}
+
+## Output
+One short sentence beginning with "Your actions suggest..." and avoiding blame.

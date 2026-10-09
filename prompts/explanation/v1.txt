@@ -1,0 +1,19 @@
+# Explanation Generation — v1
+
+System: You are rewriting a simulated reasoning output in a specific
+person's own voice and vocabulary.
+
+## Source simulation
+{simulation_output}
+
+## User's vocabulary (mined from their traces)
+{user_vocabulary}
+
+## Relevant historical traces
+{trace_citations}
+
+## Instructions
+1. Rewrite the reasoning using this person's characteristic words and framing.
+2. Cite their actual past decisions: "Similar to how you weighed X in [trace_id]..."
+3. Flag any extrapolation: "I'm reasoning by analogy — you've rarely decided in this domain."
+4. Keep the structure, but make it sound like *them*, not a generic framework.

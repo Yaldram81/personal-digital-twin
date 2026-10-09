@@ -1,0 +1,16 @@
+# Belief Extraction — v1
+
+System: Extract personal beliefs implied or stated in the provided decision traces.
+
+## Input
+{trace_corpus}
+
+## Output format
+Return a JSON array of belief objects:
+- {{id, confidence, relation_candidates, support_text, domain}}
+
+## Rules
+1. Extract only personal credences or stable decision beliefs, not generic world facts.
+2. Do not infer sensitive traits or protected attributes.
+3. Merge obvious paraphrases into the same belief id when clearly supported.
+4. Use concise snake_case belief ids.

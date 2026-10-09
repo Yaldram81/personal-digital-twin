@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Personal Digital Twin — Narrate a decision</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  p.hint { color: #555; font-size: 0.9rem; }
+  label { display: block; font-weight: 600; margin-top: 1rem; }
+  textarea { width: 100%; min-height: 4rem; margin-top: 0.25rem; font: inherit; box-sizing: border-box; }
+  button { margin-top: 1.25rem; padding: 0.6rem 1.2rem; font-size: 1rem; cursor: pointer; }
+  #result { margin-top: 1.5rem; white-space: pre-wrap; background: #f5f5f5; padding: 1rem; border-radius: 6px; display: none; }
+  #error { color: #b00020; margin-top: 1rem; display: none; }
+</style>
+</head>
+<body>
+  <h1>Narrate a real decision</h1>
+  <p class="hint">
+    This is the same structured-reflection flow as the CLI (<code>pdt narrate</code>) and the
+    <code>/narration/*</code> API — it produces a schema-validated reasoning trace stored in
+    your encrypted local store. Nothing here leaves this server.
+  </p>
+
+  <form id="narration-form">
+    <label for="intake">What decision were you facing?</label>
+    <textarea id="intake" required></textarea>
+
+    <label for="options">What options did you seriously consider?</label>
+    <textarea id="options"></textarea>
+
+    <label for="factors">What factors mattered most, and how did you weigh them?</label>
+    <textarea id="factors"></textarea>
+
+    <label for="weighting">How did those factors trade off against each other?</label>
+    <textarea id="weighting"></textarea>
+
+    <label for="counterfactual">What almost changed your mind? (optional)</label>
+    <textarea id="counterfactual"></textarea>
+
+    <label for="review">Anything else worth adding? (optional)</label>
+    <textarea id="review"></textarea>
+
+    <button type="submit">Submit narration</button>
+  </form>
+
+  <div id="error"></div>
+  <pre id="result"></pre>
+
+<script>
+async function submitNarration(event) {
+  event.preventDefault();
+  const errorBox = document.getElementById('error');
+  const resultBox = document.getElementById('result');
+  errorBox.style.display = 'none';
+  resultBox.style.display = 'none';
+
+  const fields = ['intake', 'options', 'factors', 'weighting', 'counterfactual', 'review'];
+  const narration = fields
+    .map((id) => document.getElementById(id).value.trim())
+    .filter((text) => text.length > 0)
+    .join('\n');
+
+  if (!narration) {
+    errorBox.textContent = 'Please describe the decision before submitting.';
+    errorBox.style.display = 'block';
+    return;
+  }
+
+  try {
+    const startResp = await fetch('/narration/start', { method: 'POST' });
+    if (!startResp.ok) throw new Error('Could not start a narration session.');
+    const session = await startResp.json();
+
+    const submitResp = await fetch(`/narration/${session.id}/submit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ narration }),
+    });
+    const body = await submitResp.json();
+    if (!submitResp.ok) {
+      throw new Error(body.detail || 'Extraction failed.');
+    }
+
+    resultBox.textContent = JSON.stringify(body, null, 2);
+    resultBox.style.display = 'block';
+  } catch (err) {
+    errorBox.textContent = err instanceof Error ? err.message : String(err);
+    errorBox.style.display = 'block';
+  }
+}
+
+document.getElementById('narration-form').addEventListener('submit', submitNarration);
+</script>
+</body>
+</html>

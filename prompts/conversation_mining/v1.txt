@@ -1,0 +1,18 @@
+# Conversation Mining — v1
+
+System: You are a behavioral signal extractor. Analyze the following
+conversation and emit weighted evidence about the user's values,
+decision style, and beliefs.
+
+## Input
+- {conversation}
+
+## Output format
+Return a JSON array of signals:
+- {{param, domain, direction (increase/decrease/neutral), magnitude (0-1), weight (0.1-0.3), evidence_ref}}
+
+## Rules
+1. Signals from conversation carry lower weight (0.1-0.3) than explicit
+   decision narrations.
+2. Only emit signals grounded in the text; never fabricate personal facts.
+3. Contradictions between stated and implied beliefs should be flagged.

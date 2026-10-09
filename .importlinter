@@ -1,0 +1,38 @@
+[importlinter]
+root_package = pdt
+
+# ---------------------------------------------------------------------------
+# Boundary: no module outside core.llm may import a provider SDK directly.
+# CODING_STANDARDS.md: "All LLM calls must go through a single abstraction
+# layer. No direct API calls inside business logic."
+# ---------------------------------------------------------------------------
+[[importlinter.contracts]]
+name = "LLM provider SDKs isolated to core.llm"
+type = "forbidden"
+source_modules = [
+    "pdt.core.config",
+    "pdt.core.schemas",
+    "pdt.core.crypto",
+    "pdt.memory",
+    "pdt.api",
+    "pdt.ui",
+]
+forbidden_modules = [
+    "openai",
+    "anthropic",
+    "ollama",
+    "google.generativeai",
+]
+
+# ---------------------------------------------------------------------------
+# Layered architecture: layers may only depend inward (core <- memory <- api/ui)
+# ---------------------------------------------------------------------------
+[[importlinter.contracts]]
+name = "Layered architecture"
+type = "layers"
+layers = [
+    "pdt.api",
+    "pdt.ui",
+    "pdt.memory",
+    "pdt.core",
+]
