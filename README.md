@@ -200,7 +200,7 @@ flowchart TD
     
     DISP --> FB{"<b>User Agreement?</b>"}
     FB -->|Accurate| ACC["<b>Verified Prediction</b><br/>Log validation event"]
-    FB -->|'Actually I would...'| CORR["<b>Feedback Correction</b><br/>POST /twin/feedback"]
+    FB -->|"Actually I would..."| CORR["<b>Feedback Correction</b><br/>POST /twin/feedback"]
     CORR --> POSTERIOR["<b>Shift Posterior</b><br/>Update future Bayesian priors"]
 
     classDef primary fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff;
@@ -256,26 +256,26 @@ quadrantChart
 ```mermaid
 graph LR
     subgraph Career_Domain["Domain: Career & Technology"]
-        B1(("B1: Rapid early risk compounds skills\n[μ=0.91, σ=0.04]"))
-        B2(("B2: Modularity must not hurt user latency\n[μ=0.84, σ=0.06]"))
-        B4(("B4: Async deep work > meetings\n[μ=0.88, σ=0.05]"))
+        B1["<b>B1: Rapid early risk compounds skills</b><br/>[μ=0.91, σ=0.04]"]
+        B2["<b>B2: Modularity must not hurt user latency</b><br/>[μ=0.84, σ=0.06]"]
+        B4["<b>B4: Async deep work over meetings</b><br/>[μ=0.88, σ=0.05]"]
     end
 
     subgraph Finance_Domain["Domain: Capital & Wealth"]
-        B3(("B3: Index funds beat market timing\n[μ=0.89, σ=0.03]"))
-        B8(("B8: Calculated risks require low fixed costs\n[μ=0.82, σ=0.07]"))
+        B3["<b>B3: Index funds beat market timing</b><br/>[μ=0.89, σ=0.03]"]
+        B8["<b>B8: Calculated risks require low fixed costs</b><br/>[μ=0.82, σ=0.07]"]
     end
 
     subgraph Ethics_Domain["Domain: Principles"]
-        B6(("B6: Local encryption is non-negotiable\n[μ=0.95, σ=0.02]"))
+        B6["<b>B6: Local encryption is non-negotiable</b><br/>[μ=0.95, σ=0.02]"]
     end
 
-    B1 -->|Supports (+0.80)| B4
-    B1 -->|Supports (+0.85)| B8
-    B3 -->|Supports (+0.75)| B8
-    B6 -->|Supports (+0.70)| B2
+    B1 -->|"Supports +0.80"| B4
+    B1 -->|"Supports +0.85"| B8
+    B3 -->|"Supports +0.75"| B8
+    B6 -->|"Supports +0.70"| B2
     
-    B1 -.->|⚡ Tension Severity=0.68| B3
+    B1 -.->|"⚡ Tension Severity = 0.68"| B3
 
     linkStyle 4 stroke:#f43f5e,stroke-width:3px,stroke-dasharray: 5 5;
     classDef career fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#ffffff;
